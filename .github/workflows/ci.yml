@@ -23,17 +23,21 @@ on:
 jobs:
   install_dependencies:
     runs-on: ubuntu-latest
-    container: node:${{ matrix.node-version }}-buster
 
     strategy:
       matrix:
         node-version:
           # We think that we don't have to specify all versions which we'd like to test
           # because almost npm packages cares about platform but don't care about node's version.
-          - 14
+          - 14.x
 
     steps:
     - uses: actions/checkout@v2.3.1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
     - name: Get yarn cache directory path
       id: yarn-cache-dir-path
       run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -54,18 +58,21 @@ jobs:
   lint:
     needs: [install_dependencies]
     runs-on: ubuntu-latest
-    container: node:${{ matrix.node-version }}-buster
 
     strategy:
       matrix:
         node-version:
           # As my observations, Node.js 12 does not supports `exports` field.
           # This is nice to contrast.
-          - 12
-          - 14
+          - 12.x
+          - 14.x
 
     steps:
     - uses: actions/checkout@v2.3.1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
 
     - name: Get yarn cache directory path
       id: yarn-cache-dir-path
@@ -88,18 +95,21 @@ jobs:
   build:
     needs: [install_dependencies]
     runs-on: ubuntu-latest
-    container: node:${{ matrix.node-version }}-buster
 
     strategy:
       matrix:
         node-version:
           # As my observations, Node.js 12 does not supports `exports` field.
           # This is nice to contrast.
-          - 12
-          - 14
+          - 12.x
+          - 14.x
 
     steps:
     - uses: actions/checkout@v2.3.1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
 
     - name: Get yarn cache directory path
       id: yarn-cache-dir-path
@@ -122,18 +132,21 @@ jobs:
   unittest:
     needs: [install_dependencies]
     runs-on: ubuntu-latest
-    container: node:${{ matrix.node-version }}-buster
 
     strategy:
       matrix:
         node-version:
           # As my observations, Node.js 12 does not supports `exports` field.
           # This is nice to contrast.
-          - 12
-          - 14
+          - 12.x
+          - 14.x
 
     steps:
     - uses: actions/checkout@v2.3.1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
 
     - name: Get yarn cache directory path
       id: yarn-cache-dir-path
@@ -156,18 +169,21 @@ jobs:
   test_distribution_contain_all:
     needs: [install_dependencies]
     runs-on: ubuntu-latest
-    container: node:${{ matrix.node-version }}-buster
 
     strategy:
       matrix:
         node-version:
           # As my observations, Node.js 12 does not supports `exports` field.
           # This is nice to contrast.
-          - 12
-          - 14
+          - 12.x
+          - 14.x
 
     steps:
     - uses: actions/checkout@v2.3.1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
 
     - name: Get yarn cache directory path
       id: yarn-cache-dir-path
@@ -190,18 +206,21 @@ jobs:
   test_esmodule_path_rewrite:
     needs: [install_dependencies]
     runs-on: ubuntu-latest
-    container: node:${{ matrix.node-version }}-buster
 
     strategy:
       matrix:
         node-version:
           # As my observations, Node.js 12 does not supports `exports` field.
           # This is nice to contrast.
-          - 12
-          - 14
+          - 12.x
+          - 14.x
 
     steps:
     - uses: actions/checkout@v2.3.1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
 
     - name: Get yarn cache directory path
       id: yarn-cache-dir-path
@@ -224,18 +243,21 @@ jobs:
   test_package_install:
     needs: [install_dependencies]
     runs-on: ubuntu-latest
-    container: node:${{ matrix.node-version }}-buster
 
     strategy:
       matrix:
         node-version:
           # As my observations, Node.js 12 does not supports `exports` field.
           # This is nice to contrast.
-          - 12
-          - 14
+          - 12.x
+          - 14.x
 
     steps:
     - uses: actions/checkout@v2.3.1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
 
     - name: Get yarn cache directory path
       id: yarn-cache-dir-path
