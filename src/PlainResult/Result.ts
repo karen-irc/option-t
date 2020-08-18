@@ -1,4 +1,4 @@
-export type Result<T, E> = Ok<T> | Err<E>;
+export type Result<T, TError> = Ok<T> | Err<TError>;
 
 export type Ok<T> = {
     readonly ok: true;
@@ -19,7 +19,7 @@ export type Ok<T> = {
     readonly err?: undefined;
 };
 
-export function isOk<T, E>(v: Result<T, E>): v is Ok<T> {
+export function isOk<T, TError>(v: Result<T, TError>): v is Ok<T> {
     return v.ok;
 }
 
@@ -32,7 +32,7 @@ export function createOk<T>(val: T): Ok<T> {
     return r;
 }
 
-export type Err<E> = {
+export type Err<TError> = {
     readonly ok: false;
 
     // To keep the same shape (hidden class or structure) with Ok<T>,
@@ -49,15 +49,15 @@ export type Err<E> = {
     // You can create this object by hand. But it's fragile for the future change. We don't recommend it.
     readonly val?: undefined;
 
-    readonly err: E;
+    readonly err: TError;
 };
 
-export function isErr<T, E>(v: Result<T, E>): v is Err<E> {
+export function isErr<T, TError>(v: Result<T, TError>): v is Err<TError> {
     return !v.ok;
 }
 
-export function createErr<E>(err: E): Err<E> {
-    const r: Err<E> = {
+export function createErr<TError>(err: TError): Err<TError> {
+    const r: Err<TError> = {
         ok: false,
         val: undefined,
         err: err,

@@ -8,11 +8,11 @@ import { Result, Ok, Err, isErr, createOk, createErr } from './Result';
  *  - `Ok(None)` -> `None`
  *  - `Err(e)` -> `Some(Err(e))`
  */
-export function transposeForResult<T, E>(self: Result<Option<T>, E>): Option<Result<T, E>> {
+export function transposeForResult<T, TError>(self: Result<Option<T>, TError>): Option<Result<T, TError>> {
     if (isErr(self)) {
-        const e: E = self.err;
-        const newErr: Err<E> = createErr(e);
-        const r: Some<Err<E>> = createSome<Err<E>>(newErr);
+        const e: TError = self.err;
+        const newErr: Err<TError> = createErr(e);
+        const r: Some<Err<TError>> = createSome<Err<TError>>(newErr);
         return r;
     }
 

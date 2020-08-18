@@ -7,16 +7,16 @@ import { Result } from './Result';
  *  @throws {TypeError}
  *      Throws if the self is a `Err`.
  */
-export function unwrapFromResult<T, E>(v: Result<T, E>): T | never {
+export function unwrapFromResult<T, TError>(v: Result<T, TError>): T | never {
     return expectIsOk(v, 'called with `Err`');
 }
 
 /**
- *  Return the inner `E` of a `Err(E)`.
+ *  Return the inner `TError` of a `Err(TError)`.
  *
  *  @throws {TypeError}
  *      Throws if the self is a `Ok`.
  */
-export function unwrapErrFromResult<T, E>(v: Result<T, E>): E | never {
+export function unwrapErrFromResult<T, TError>(v: Result<T, TError>): TError | never {
     return expectIsErr(v, 'called with `Ok`');
 }

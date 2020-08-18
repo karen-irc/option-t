@@ -4,7 +4,7 @@ import { Result, Ok, Err } from './Result';
 import { asMutResult } from './asMut';
 
 type MutOk<T> = Mutable<Ok<T>>;
-type MutErr<E> = Mutable<Err<E>>;
+type MutErr<TError> = Mutable<Err<TError>>;
 
 /**
  *  mutators ared called for the inputted _v_.
@@ -27,7 +27,7 @@ type MutErr<E> = Mutable<Err<E>>;
  *  and this API is designed to use as a destructor or similar fashions.
  *  So if you call this for same object more than once, your code might contain "double free" problem.
  */
-export function unsafeDropBothForResult<T, E>(v: Result<T, E>, okMutator: TapFn<MutOk<T>>, errMutator: TapFn<MutErr<E>>): void {
+export function unsafeDropBothForResult<T, TError>(v: Result<T, TError>, okMutator: TapFn<MutOk<T>>, errMutator: TapFn<MutErr<TError>>): void {
     const mutable = asMutResult(v);
     if (mutable.ok) {
         okMutator(mutable);
@@ -55,7 +55,7 @@ export function unsafeDropBothForResult<T, E>(v: Result<T, E>, okMutator: TapFn<
  *  and this API is designed to use as a destructor or similar fashions.
  *  So if you call this for same object more than once, your code might contain "double free" problem.
  */
-export function unsafeDropOkForResult<T, E>(v: Result<T, E>, okMutator: TapFn<MutOk<T>>): void {
+export function unsafeDropOkForResult<T, TError>(v: Result<T, TError>, okMutator: TapFn<MutOk<T>>): void {
     return unsafeDropBothForResult(v, okMutator, () => {});
 }
 
@@ -78,6 +78,6 @@ export function unsafeDropOkForResult<T, E>(v: Result<T, E>, okMutator: TapFn<Mu
  *  and this API is designed to use as a destructor or similar fashions.
  *  So if you call this for same object more than once, your code might contain "double free" problem.
  */
-export function unsafeDropErrForResult<T, E>(v: Result<T, E>, errMutator: TapFn<MutErr<E>>): void {
+export function unsafeDropErrForResult<T, TError>(v: Result<T, TError>, errMutator: TapFn<MutErr<TError>>): void {
     return unsafeDropBothForResult(v, () => {}, errMutator);
 }

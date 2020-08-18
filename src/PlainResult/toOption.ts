@@ -5,7 +5,7 @@ import { Result } from './Result';
  *  Convert to `Some(T)` if _v_ is `Ok(T)`.
  *  Otherwise, return `None`.
  */
-export function toOptionFromOk<T, E>(v: Result<T, E>): Option<T> {
+export function toOptionFromOk<T, TError>(v: Result<T, TError>): Option<T> {
     if (v.ok) {
         return createSome<T>(v.val);
     }
@@ -15,12 +15,12 @@ export function toOptionFromOk<T, E>(v: Result<T, E>): Option<T> {
 }
 
 /**
- *  Convert to `Some(E)` if _v_ is `Err(E)`.
+ *  Convert to `Some(TError)` if _v_ is `Err(TError)`.
  *  Otherwise, return `None`.
  */
-export function toOptionFromErr<T, E>(v: Result<T, E>): Option<E> {
+export function toOptionFromErr<T, TError>(v: Result<T, TError>): Option<TError> {
     if (!v.ok) {
-        return createSome<E>(v.err);
+        return createSome<TError>(v.err);
     }
     else {
         return createNone();
