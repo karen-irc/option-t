@@ -59,8 +59,8 @@ export function addHistoricalPathToExportsFields(o, histricalJSPathList) {
         }
     };
 
-    handleSpecialCaseOfNodeModuleResolution(DIR_SUBPATH.map((path) => `cjs/${path}`), 'js');
+    handleSpecialCaseOfNodeModuleResolution(DIR_SUBPATH.map((path) => `cjs/${path}`), 'cjs');
     handleSpecialCaseOfNodeModuleResolution(DIR_SUBPATH.map((path) => `esm/${path}`), 'mjs');
-    // Our defult is still commonjs. For lib/, we should use `.js`.
-    handleSpecialCaseOfNodeModuleResolution(DIR_SUBPATH.map((path) => `lib/${path}`), 'js');
+    // Our defult is still commonjs. For lib/, we should use `.cjs`.
+    handleSpecialCaseOfNodeModuleResolution(DIR_SUBPATH.map((path) => `lib/${path}`), 'cjs');
 }

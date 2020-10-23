@@ -2,8 +2,11 @@
   "name": "option-t",
   "version": "23.0.2",
   "description": "Option type implementation whose APIs are inspired by Rust's `Option<T>`.",
+  "engines": {
+    "node": ">=12.18.0 <13 || >=14.8.0"
+  },
   "type": "commonjs",
-  "main": "./cjs/index.js",
+  "main": "./cjs/index.cjs",
   "files": [
     "CHANGELOG.md",
     "cjs/",

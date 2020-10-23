@@ -14,6 +14,7 @@ DIST_COMMONJS_DIR := $(DIST_DIR)/cjs
 DIST_MIXED_LIB_DIR := $(DIST_DIR)/lib
 TEST_CACHE_DIR := $(CURDIR)/__test_cache
 TMP_MJS_DIR := $(CURDIR)/__tmp_mjs
+TMP_COMMONJS_DIR := $(CURDIR)/__tmp_cjs
 
 ## In CI environment, we should change some configuration
 ifeq ($(CI),true)
@@ -36,6 +37,7 @@ CLEAN_TARGETS := \
 	dist \
 	test_cache \
 	tmp_mjs \
+	tmp_cjs \
 
 .PHONY: clean
 clean: $(addprefix clean_, $(CLEAN_TARGETS))
@@ -52,6 +54,10 @@ clean_test_cache:
 clean_tmp_mjs:
 	$(NPM_BIN)/del $(TMP_MJS_DIR)
 
+.PHONY: clean_tmp_cjs
+clean_tmp_cjs:
+	$(NPM_BIN)/del $(TMP_COMMONJS_DIR)
+
 
 ###########################
 # Build
@@ -62,25 +68,44 @@ distribution: build cp_docs cp_changelog cp_license cp_readme generate_manifest
 .PHONY: build
 build: build_cjs build_esm build_mixedlib ## Build all targets.
 
+##### Build $(DIST_COMMONJS_DIR)
 .PHONY: build_cjs
-build_cjs: build_cjs_js build_cjs_type_definition build_cjs_ts ## Build `cjs/`.
+build_cjs: build_cjs__copy_cjs_to_dist_cjs build_cjs__copy_dts_to_dist_cjs ## Build `cjs/`.
 
-.PHONY: build_cjs_js
-build_cjs_js: clean_dist
+.PHONY: build_cjs__copy_cjs_to_dist_cjs
+build_cjs__copy_cjs_to_dist_cjs: build_cjs__rename_js_to_cjs clean_dist
+	$(NPM_BIN)/cpx '$(TMP_COMMONJS_DIR)/**/*.cjs' $(DIST_COMMONJS_DIR) --preserve
+
+.PHONY: build_cjs__copy_dts_to_dist_cjs
+build_cjs__copy_dts_to_dist_cjs: build_cjs__create_tmp_cjs clean_dist
+	$(NPM_BIN)/cpx '$(TMP_COMMONJS_DIR)/**/*.d.ts' $(DIST_COMMONJS_DIR) --preserve
+
+.PHONY: build_cjs__rename_js_to_cjs
+build_cjs__rename_js_to_cjs: build_cjs__create_tmp_cjs
+	TARGET_DIR=$(TMP_COMMONJS_DIR) \
+    $(NODE_BIN) $(CURDIR)/tools/extension_renamer/to_cjs.mjs
+
+.PHONY: build_cjs__create_tmp_cjs
+build_cjs__create_tmp_cjs: $(addprefix build_cjs__create_tmp_cjs__by_calling_, tsc babel cpx)
+
+.PHONY: build_cjs__create_tmp_cjs_by_calling_tsc
+build_cjs__create_tmp_cjs__by_calling_tsc: clean_tmp_cjs
+	$(NPM_BIN)/tsc --project $(CURDIR)/tsconfig_cjs.json --outDir $(TMP_COMMONJS_DIR)
+
+.PHONY: build_cjs__create_tmp_cjs_by_calling_babel
+build_cjs__create_tmp_cjs__by_calling_babel: clean_tmp_cjs
 	$(NPM_BIN)/babel $(SRC_DIR) \
-    --out-dir $(DIST_COMMONJS_DIR) \
-    --extensions .js \
+    --out-dir $(TMP_COMMONJS_DIR) \
+    --extensions=.js \
     --no-babelrc \
     --config-file $(CURDIR)/tools/babel/babelrc.cjs.js
 
-.PHONY: build_cjs_type_definition
-build_cjs_type_definition: clean_dist
-	$(NPM_BIN)/cpx '$(SRC_DIR)/**/*.d.ts' $(DIST_COMMONJS_DIR) --preserve
+.PHONY: build_cjs__create_tmp_cjs_by_calling_cpx
+build_cjs__create_tmp_cjs__by_calling_cpx: clean_tmp_cjs
+	$(NPM_BIN)/cpx '$(SRC_DIR)/**/*.d.ts' $(TMP_COMMONJS_DIR) --preserve
 
-.PHONY: build_cjs_ts
-build_cjs_ts: clean_dist
-	$(NPM_BIN)/tsc --project $(CURDIR)/tsconfig_cjs.json --outDir $(DIST_COMMONJS_DIR)
 
+##### Build $(DIST_ESM_DIR)
 .PHONY: build_esm
 build_esm: build_mjs_cp_mjs_to_esm build_mjs_cp_dts_to_esm ## Build `esm/`.
 
@@ -95,7 +120,7 @@ build_mjs_cp_dts_to_esm: build_mjs_create_tmp_mjs clean_dist
 .PHONY: build_mjs_rename_js_to_mjs
 build_mjs_rename_js_to_mjs: build_mjs_create_tmp_mjs
 	TARGET_DIR=$(TMP_MJS_DIR) \
-    $(NODE_BIN) $(CURDIR)/tools/extension_renamer.mjs
+    $(NODE_BIN) $(CURDIR)/tools/extension_renamer/to_mjs.mjs
 
 .PHONY: build_mjs_create_tmp_mjs
 build_mjs_create_tmp_mjs: build_mjs_create_tmp_mjs_call_tsc build_mjs_create_tmp_mjs_call_babel build_mjs_create_tmp_mjs_cal_cpx
@@ -112,7 +137,7 @@ build_mjs_create_tmp_mjs_call_babel: clean_tmp_mjs
 build_mjs_create_tmp_mjs_cal_cpx: clean_tmp_mjs
 	$(NPM_BIN)/cpx '$(SRC_DIR)/**/*.d.ts' $(TMP_MJS_DIR) --preserve
 
-
+##### Build $(DIST_MIXED_LIB_DIR)
 .PHONY: build_mixedlib
 build_mixedlib: build_mixedlib_cp_mjs build_mixedlib_cp_cjs build_mixedlib_cp_dts ## Build `lib/`.
 
@@ -122,7 +147,7 @@ build_mixedlib_cp_mjs: build_esm clean_dist
 
 .PHONY: build_mixedlib_cp_cjs
 build_mixedlib_cp_cjs: build_cjs clean_dist
-	$(NPM_BIN)/cpx '$(DIST_COMMONJS_DIR)/**/*.js' $(DIST_MIXED_LIB_DIR) --preserve
+	$(NPM_BIN)/cpx '$(DIST_COMMONJS_DIR)/**/*.cjs' $(DIST_MIXED_LIB_DIR) --preserve
 
 .PHONY: build_mixedlib_cp_dts
 build_mixedlib_cp_dts: build_esm clean_dist

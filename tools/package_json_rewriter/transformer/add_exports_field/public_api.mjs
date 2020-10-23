@@ -19,7 +19,7 @@ class ExportEntity {
         const p = this._path !== undefined ? this._path : this._key;
 
         const esm = `./esm/${p}.mjs`;
-        const cjs = `./cjs/${p}.js`;
+        const cjs = `./cjs/${p}.cjs`;
 
         // [By the document of Node.js v14.2](https://nodejs.org/api/esm.html#esm_resolution_algorithm),
         //  * Condition matching is applied in object order from first to last within the "exports" object.

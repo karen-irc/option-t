@@ -3,9 +3,6 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 
-const FROM_EXTENSION = 'js';
-const TO_EXTENSION = 'mjs';
-
 function debug(input) {
     const filename = fileURLToPath(import.meta.url);
     console.log(`${filename}: ${input}`);
@@ -55,17 +52,15 @@ function bulkRename(filePathList, targetPattern, replaceValue) {
     return Promise.all(result);
 }
 
-(async function main() {
-    const TARGET_DIR = process.env.TARGET_DIR;
-    assert.ok(typeof TARGET_DIR === 'string', 'TARGET_DIR should be string');
+export async function renamer(cwd, targetDir, fromExtension, toExtension) {
+    assert.ok(typeof targetDir === 'string', 'TARGET_DIR should be string');
 
-    const cwd = process.cwd();
-    const subrootDir = path.resolve(cwd, TARGET_DIR);
+    const subrootDir = path.resolve(cwd, targetDir);
     debug(`subrootDir is ${subrootDir}`);
 
     const allfiles = getAllDescendantFiles(subrootDir);
 
-    const targetPattern = new RegExp(`\\.${FROM_EXTENSION}$`, 'u');
+    const targetPattern = new RegExp(`\\.${fromExtension}$`, 'u');
 
     const targetFiles = [];
     for await (const file of filterFiles(allfiles, targetPattern)) {
@@ -73,9 +68,6 @@ function bulkRename(filePathList, targetPattern, replaceValue) {
     }
     debug(`got target files`);
 
-    await bulkRename(targetFiles, targetPattern, `.${TO_EXTENSION}`);
+    await bulkRename(targetFiles, targetPattern, `.${toExtension}`);
     debug(`complete to rename all`);
-})().catch((e) => {
-    console.error(e);
-    process.exit(1);
-});
+}

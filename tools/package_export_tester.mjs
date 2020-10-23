@@ -26,7 +26,7 @@ async function loadESM(file) {
 }
 
 async function loadJSFileAsModule(file) {
-    if (file.endsWith('.js')) {
+    if (file.endsWith('.cjs')) {
         loadCJS(file);
     }
     else if (file.endsWith('.mjs')) {

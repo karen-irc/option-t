@@ -1,5 +1,6 @@
 __dist/
 __test_cache/
+__tmp_cjs/
 __tmp_mjs/
 __type_test/
 node_modules/

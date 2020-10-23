@@ -4,6 +4,7 @@ node_modules/
 # generated files
 __dist/
 __test_cache/
+__tmp_cjs/
 __tmp_mjs/
 
 ## TODO
