@@ -157,11 +157,15 @@ generate_manifest: clean_dist
 # Lint
 ###########################
 .PHONY: lint
-lint: eslint ## Run all lints
+lint: eslint tscheck ## Run all lints
 
 .PHONY: eslint
 eslint:
 	$(NPM_BIN)/eslint --ext $(ESLINT_APPLIED_EXTENSIONS) $(CURDIR)/
+
+.PHONY: tscheck
+tscheck: ## Check static types
+	$(NPM_BIN)/tsc -p $(CURDIR)/tsconfig.json --noEmit
 
 .PHONY: tscheck
 tscheck: ## Check static types
