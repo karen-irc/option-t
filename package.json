@@ -9,7 +9,6 @@
     "cjs/",
     "docs/",
     "esm/",
-    "lib/",
     "LICENSE.MIT",
     "package.json",
     "README.md"

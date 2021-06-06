@@ -56,10 +56,6 @@ async function tryImportPathForCompat(pathItem) {
     else if (pathItem.isCJS()) {
         tryImportPathAsCJS(pathItem);
     }
-    else if (pathItem.isLib()) {
-        tryImportPathAsCJS(pathItem);
-        await tryImportPathAsESM(pathItem);
-    }
     else {
         throw new RangeError(`unreachable, but ${pathItem.resolvedName()} reach to here`);
     }

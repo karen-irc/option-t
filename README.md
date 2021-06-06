@@ -175,21 +175,6 @@ You can use [these paths](./docs/public_api_list.md).
    - This directory provides commonjs style modules with `.js` extension.
 - `option-t/esm`
    - This directory privides ES modules with `.mjs` extension.
-- `option-t/lib` (__*Deprecated*__)
-   - This directory provides both of an ES module and a commonjs style module.
-       - ES module has `.mjs` extension.
-       - CommonJS module has `.js` extension.
-   - This directory is provided for a bit of a tricky purpose.
-       - For example, your project distributes a bundled file with some module bundlers that can handle ES module (e.g. rollup or webpack),
-         But your project also use babel or typescript's downlevel transform to transform your code from ES module to Commonjs and
-         your project runs unit-tests for transformed code with plain Node.js which only use `require()`.
-   - _Please don't use this path if you don't have to use this_.
-       - After Node.js v13.2, we recommend to use ES Module supported natively.
-    - ⚠️ **This will be removed in the future major release** (tracking issue is [#808](https://github.com/karen-irc/option-t/issues/808)).
-        - If you're using this, please migrate by following steps.
-            - `option-t/lib/Option`: Use `option-t/esm/Option` or `option-t/cjs/Option`.
-            - `option-t/lib/Result`: Use `option-t/esm/Result` or `option-t/cjs/Result`.
-            - Otherwise, replase `option-t/lib/***` to `option-t/**`.
 
 ##### Deprecation: Don't add `.js`, `.cjs`, `.mjs` extension for import path of this package
 

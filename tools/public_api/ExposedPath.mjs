@@ -52,12 +52,6 @@ export class QuirksLegacyExposedPath extends ExposedPath {
         const isCJS = /^cjs\//u.test(name);
         return isCJS;
     }
-
-    isLib() {
-        const name = this.name();
-        const ok = /^lib\//u.test(name);
-        return ok;
-    }
 }
 
 export function* generateExposedPathSequence() {

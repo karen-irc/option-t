@@ -11,7 +11,6 @@ DIST_DIR := $(CURDIR)/__dist
 DIST_DOCS_DIR := $(DIST_DIR)/docs
 DIST_ESM_DIR := $(DIST_DIR)/esm
 DIST_COMMONJS_DIR := $(DIST_DIR)/cjs
-DIST_MIXED_LIB_DIR := $(DIST_DIR)/lib
 TMP_MJS_DIR := $(CURDIR)/__tmp_mjs
 
 PROJECT_NPMRC := $(CURDIR)/.npmrc
@@ -62,7 +61,7 @@ clean_npmrc:
 distribution: build cp_docs cp_changelog cp_license cp_readme generate_manifest
 
 .PHONY: build
-build: build_cjs build_esm build_mixedlib ## Build all targets.
+build: build_cjs build_esm ## Build all targets.
 
 .PHONY: build_cjs
 build_cjs: build_cjs_js build_cjs_type_definition build_cjs_ts ## Build `cjs/`.
@@ -113,22 +112,6 @@ build_mjs_create_tmp_mjs_call_babel: clean_tmp_mjs
 .PHONY: build_mjs_create_tmp_mjs_cal_cpx
 build_mjs_create_tmp_mjs_cal_cpx: clean_tmp_mjs
 	$(NPM_BIN)/cpx '$(SRC_DIR)/**/*.d.ts' $(TMP_MJS_DIR) --preserve
-
-
-.PHONY: build_mixedlib
-build_mixedlib: build_mixedlib_cp_mjs build_mixedlib_cp_cjs build_mixedlib_cp_dts ## Build `lib/`.
-
-.PHONY: build_mixedlib_cp_mjs
-build_mixedlib_cp_mjs: build_esm clean_dist
-	$(NPM_BIN)/cpx '$(DIST_ESM_DIR)/**/*.mjs' $(DIST_MIXED_LIB_DIR) --preserve
-
-.PHONY: build_mixedlib_cp_cjs
-build_mixedlib_cp_cjs: build_cjs clean_dist
-	$(NPM_BIN)/cpx '$(DIST_COMMONJS_DIR)/**/*.js' $(DIST_MIXED_LIB_DIR) --preserve
-
-.PHONY: build_mixedlib_cp_dts
-build_mixedlib_cp_dts: build_esm clean_dist
-	$(NPM_BIN)/cpx '$(DIST_ESM_DIR)/**/*.d.ts' $(DIST_MIXED_LIB_DIR) --preserve
 
 .PHONY: cp_docs
 cp_docs: clean_dist
