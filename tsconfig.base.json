@@ -45,6 +45,8 @@
         "noUncheckedIndexedAccess": true,            /* Include 'undefined' in index signature results */
         "noPropertyAccessFromIndexSignature": true,  /* Require undeclared properties from index signatures to use element accesses. */
         "noImplicitOverride": true,
+        "exactOptionalPropertyTypes": true,
+        "useUnknownInCatchVariables": true,
 
         /* Module Resolution Options */
         "moduleResolution": "node",                  /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */

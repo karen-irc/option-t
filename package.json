@@ -64,7 +64,7 @@
     "eslint": "^7.29.0",
     "eslint-config-prettier": "^8.3.0",
     "prettier": "^2.3.2",
-    "typescript": "^4.3.4"
+    "typescript": "^4.4.0-beta"
   },
   "sideEffects": false,
   "typings": "./cjs/index.d.ts"
